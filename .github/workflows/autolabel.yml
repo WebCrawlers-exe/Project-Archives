@@ -12,13 +12,13 @@ jobs:
       pull-requests: write
       
     steps:
-      - name: GitHub Script
-        uses: actions/github-script@v6.3.1
+      - uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             # Create comment body as Markdown
-            var msg = `👋 Thanks for participating! I will review as soon as possible, usually within a few hours.`
+            var msg = `👋 Thanks for participating! I will review as soon as possible, usually within a few hours.
+            **Watch for notifications** as I may request some small changes to make sure this meets the guidelines.`
             # Get pull request description
             var body = context.payload.pull_request.body
             # If `body` exists, check for conditions
@@ -35,4 +35,3 @@ jobs:
                 repo: context.repo.repo,
                 labels: ['hacktoberfest-accepted']
             })
-          
