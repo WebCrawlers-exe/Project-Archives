@@ -1,4 +1,4 @@
-name: Pull Request Messenger
+name: autolabel
 on:
   pull_request:
     types:
