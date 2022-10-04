@@ -1,0 +1,38 @@
+name: Pull Request Messenger
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      
+    steps:
+      - name: GitHub Script
+        uses: actions/github-script@v6.3.1
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            # Create comment body as Markdown
+            var msg = `👋 Thanks for participating! I will review as soon as possible, usually within a few hours.`
+            # Get pull request description
+            var body = context.payload.pull_request.body
+            # If `body` exists, check for conditions
+            # related to being from a contributor
+            github.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: msg
+            })
+            github.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['hacktoberfest-accepted']
+            })
+          
