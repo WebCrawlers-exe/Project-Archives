@@ -1,4 +1,4 @@
-name: autolabel
+name: Pull Request Messenger
 on:
   pull_request:
     types:
@@ -23,15 +23,33 @@ jobs:
             var body = context.payload.pull_request.body
             # If `body` exists, check for conditions
             # related to being from a contributor
-            github.issues.createComment({
+            if(body) {
+              var isContribution = body.contains('New Submission')
+              var incompleteGuidelines = body.contains('[]')
+            }
+            if(isContribution) {
+              # Create comment
+              github.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 body: msg
-            })
-            github.issues.addLabels({
+              })
+              # Add 'hacktoberfest-accepted' label
+              github.issues.addLabels({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 labels: ['hacktoberfest-accepted']
-            })
+              })
+              # If missed checking guidelines,
+              # add 'invalid' label
+              if(incompleteGuidelines) {
+                github.issues.addLabels({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  labels: ['invalid']
+                })
+              }
+            }
