@@ -30,6 +30,45 @@ f = open("public.pem", "r")
 pub_key = RSA.import_key(f.read())
 f.close()
 
+#--------------------------------------------------------------------Send Msg-------------------------------------------------------------------------------------------#
+
+def send_sms(phone_no,key):
+    client = Client(account_sid, auth_token)
+    message = client.messages.create(body="Key : "+key, from_=+18288188490, to=int (phone_no))
+    
+#--------------------------------------------------------------------Send Msg-------------------------------------------------------------------------------------------#
+
+
+#--------------------------------------------------------------------Send Email-----------------------------------------------------------------------------------------#
+
+def send_email(filename,attatchment,toaddr,subject):
+    msg = MIMEMultipart()
+    msg['From'] = fromaddr
+    msg['To'] = toaddr
+    msg['Subject'] = subject
+    
+    body = subject
+    msg.attach(MIMEText(body,'plain'))
+    
+    attatchment = open(attatchment,'rb')
+
+    P = MIMEBase('application','octet-stream')
+    P.set_payload((attatchment).read())
+    encoders.encode_base64(P)
+
+    P.add_header('Content-Disposition','attatchment : filename="%s"' % filename)
+    msg.attach(P)
+
+    s = smtplib.SMTP('smtp.gmail.com',587)
+    s.starttls()
+    s.login(fromaddr,password)
+    text = msg.as_string()
+    s.sendmail(fromaddr,toaddr,text)
+    s.quit()
+
+
+#--------------------------------------------------------------------Send Email-----------------------------------------------------------------------------------------#
+
 
 #--------------------------------------------------------------------Encryption---------------------------------------------------------------------------------------
 f = None
